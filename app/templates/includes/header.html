@@ -1,0 +1,31 @@
+{% block header %}
+
+<nav class="navbar navbar-expand-lg navbar-dark shadow"
+     style="background-color: #800000;">
+
+    <div class="container-fluid px-4">
+
+        <a class="navbar-brand fw-bold text-warning fs-4"
+           href="{{ url_for('protected.protected') }}">
+            D-PARS
+        </a>
+
+        <div class="navbar-nav flex-row gap-2">
+
+            <a class="nav-link text-warning fw-semibold px-3 py-2 rounded-3"
+               href="{{ url_for('protected.protected') }}">
+                Dashboard
+            </a>
+
+            <a class="nav-link text-warning fw-semibold px-3 py-2 rounded-3"
+               href="{{ url_for('protected.add_access') }}">
+                Add Access
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+{% endblock %}

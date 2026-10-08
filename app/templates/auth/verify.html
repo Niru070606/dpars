@@ -1,0 +1,102 @@
+{% extends "loginBase.html" %}
+
+{% block title %}
+<Title>Verify Code | D-PARS</Title>
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+
+    <div class="card shadow border-0 rounded-4 p-4" style="width: 400px;">
+
+        <div class="text-center mb-4">
+
+            <h1 class="fw-bold text-danger mb-2">
+                Verify Code
+            </h1>
+
+            <p class="text-secondary mb-0">
+                Enter the 6-digit verification code sent to
+                <strong>{{ email }}</strong>.
+            </p>
+
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="alert alert-{{ category }} mb-3" role="alert">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+        <form
+            method="POST"
+            action="{{ url_for('auth.verify') }}"
+        >
+
+            <div class="mb-4">
+
+                <label for="otp" class="form-label fw-semibold">
+                    Verification Code
+                </label>
+
+                <input
+                    type="text"
+                    id="otp"
+                    name="otp"
+                    class="form-control form-control-lg text-center fw-bold"
+                    placeholder="000000"
+                    maxlength="6"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                    required
+                    autofocus
+                >
+
+            </div>
+
+            <button
+                type="submit"
+                class="btn btn-danger btn-lg w-100 fw-semibold"
+            >
+                Verify Code
+            </button>
+
+        </form>
+
+        <div class="text-center mt-3">
+
+            <a
+                href="{{ url_for('auth.forgot_password') }}"
+                class="text-danger text-decoration-none small"
+            >
+                Resend Code
+            </a>
+
+            <span class="text-secondary mx-2">•</span>
+
+            <a
+                href="{{ url_for('auth.login') }}"
+                class="text-danger text-decoration-none small"
+            >
+                Back to Login
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

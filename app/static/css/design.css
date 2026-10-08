@@ -1,0 +1,9 @@
+main{
+    background-color: white;
+    color: black;
+}
+
+
+section .auth-container{
+    border: black solid 5px;
+}

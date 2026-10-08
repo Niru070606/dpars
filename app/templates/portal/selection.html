@@ -1,0 +1,97 @@
+{% extends "loginBase.html" %}
+
+{% block title %}<title>D-PARS | Select Portal</title> {% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+
+    <div class="container py-5">
+
+        <!-- Header -->
+        <div class="text-center mb-5">
+
+            <h1 class="fw-bold text-danger display-5 mb-2">
+                D-PARS
+            </h1>
+
+            <p class="text-secondary fs-5 mb-0">
+                Select your portal
+            </p>
+
+        </div>
+
+        <!-- Portal Options -->
+        <div class="row justify-content-center g-4">
+
+            <!-- Student -->
+            <div class="col-12 col-md-5 col-lg-4">
+
+                <a
+                    href="{{ url_for('public.public') }}"
+                    class="card h-100 text-decoration-none text-dark shadow-sm border-0 rounded-4 p-4 text-center"
+                >
+
+                    <div class="fs-1 mb-3">
+                        🎓
+                    </div>
+
+                    <h2 class="h3 fw-bold text-primary mb-3">
+                        Student
+                    </h2>
+
+                    <p class="text-secondary mb-4">
+                        Check your program assignment result using your
+                        ePermit ID.
+                    </p>
+
+                    <div class="btn btn-primary w-100 fw-semibold">
+                        Student Portal
+                    </div>
+
+                </a>
+
+            </div>
+
+            <!-- Registrar -->
+            <div class="col-12 col-md-5 col-lg-4">
+
+                <a
+                    href="{{ url_for('protected.protected') }}"
+                    class="card h-100 text-decoration-none text-dark shadow-sm border-0 rounded-4 p-4 text-center"
+                >
+
+                    <div class="fs-1 mb-3">
+                        🔐
+                    </div>
+
+                    <h2 class="h3 fw-bold text-danger mb-3">
+                        Registrar
+                    </h2>
+
+                    <p class="text-secondary mb-4">
+                        Access the D-PARS management system.
+                    </p>
+
+                    <div class="btn btn-danger w-100 fw-semibold">
+                        Registrar Portal
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- PUP Accent -->
+        <div class="text-center mt-5">
+            <span class="badge text-bg-warning px-3 py-2">
+                PUP Unisan
+            </span>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
