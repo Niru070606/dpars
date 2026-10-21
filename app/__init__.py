@@ -11,7 +11,7 @@ def create_app():
         app = Flask(__name__)
 
         app.config['SQLALCHEMY_DATABASE_URI']=\
-        'mysql+pymysql://root:@localhost/dpars_db'
+        'mysql+pymysql://root:StrongPassword123@127.0.0.1:3306/dpars_db'
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
         # Needed for Flask `flash()` and sessions

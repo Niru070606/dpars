@@ -52,36 +52,50 @@ def login():
             (AdminAccount.email == username)
         ).first()
 
+        print("Account found:", admin is not None)
+
+        if admin:
+            print("Account active:", admin.is_active)
+            print("Password matches:", admin.check_password(password))
+            print("Session version:", admin.session_version)
+
         # Check password against stored hash
+        # Check account credentials and account status
         if admin and admin.check_password(password):
 
-            # Store session
-            session.clear()
+            # Block deactivated accounts
+            if not admin.is_active:
+                flash(
+                    'This account has been deactivated. '
+                    'Please contact the administrator.',
+                    'error'
+                )
+                return render_template('auth/login.html')
 
-            session['admin_id'] = admin.id
-            session['admin_user'] = admin.user
-            session['admin_email'] = admin.email
-            session['is_admin'] = True
+            # Create a fresh session after successful login
+            session.clear()
+            session["admin_id"] = admin.id
+            session["admin_user"] = admin.user
+            session["admin_email"] = admin.email
+            session["is_admin"] = True
+            session["session_version"] = admin.session_version
 
             flash('Welcome back!', 'success')
 
-            # Redirect to dashboard
+            # Redirect to the dashboard
             next_url = request.args.get('next')
 
-            try:
-                target_url = next_url or url_for('protected.dashboard')
-            except Exception:
-                target_url = '/protected/dashboard'
+            # Prevent external redirect URLs
+            if next_url and next_url.startswith('/') and not next_url.startswith('//'):
+                return redirect(next_url)
 
-            return redirect(target_url)
+            return redirect(url_for('protected.protected'))
 
         else:
-
             flash(
                 'Invalid username/email or password.',
                 'error'
             )
-
     return render_template('auth/login.html')
 
 
@@ -283,7 +297,11 @@ def reset_password():
             return redirect(url_for('auth.forgot_password'))
 
         # Update password
+        # Update password
         admin.set_password(password)
+
+        # Invalidate sessions created before this password reset
+        admin.session_version = (admin.session_version or 0) + 1
 
         try:
             db.session.commit()

@@ -1,0 +1,254 @@
+
+{% extends "mainBase.html" %}
+
+{% block title %}
+<title>Manage Accounts | D-PARS</title>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid bg-light min-vh-100 py-5">
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="fw-bold text-danger">Manage Accounts</h1>
+                <p class="text-muted mb-0">
+                    View registrar accounts and their access status.
+                </p>
+            </div>
+
+            <a href="{{ url_for('protected.protected') }}"
+               class="btn btn-outline-secondary">
+                Back to Dashboard
+            </a>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% set alert_category = {
+                        'error': 'danger',
+                        'success': 'success',
+                        'warning': 'warning',
+                        'info': 'info'
+                    }.get(category, 'info') %}
+
+                    <div class="alert alert-{{ alert_category }} alert-dismissible fade show"
+                         role="alert">
+                        {{ message }}
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close">
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Account Summary -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <p class="text-muted mb-1">Active Accounts</p>
+                        <h2 class="fw-bold text-success">
+                            {{ active_count }}
+                        </h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <p class="text-muted mb-1">Inactive Accounts</p>
+                        <h2 class="fw-bold text-secondary">
+                            {{ inactive_count }}
+                        </h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Accounts Table -->
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">Registrar Accounts</h5>
+            </div>
+
+            <div class="card-body">
+
+                {% if accounts %}
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Status</th>
+                                    <th>Created At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for account in accounts %}
+                                    <tr>
+
+                                        <!-- Account ID -->
+                                        <td>{{ account.id }}</td>
+
+                                        <!-- Username -->
+                                        <td>
+                                            {{ account.user }}
+
+                                            {% if account.id == current_admin_id %}
+                                                <span class="badge bg-primary">
+                                                    You
+                                                </span>
+                                            {% endif %}
+                                        </td>
+
+                                        <!-- Email -->
+                                        <td>{{ account.email }}</td>
+
+                                        <!-- Account Status -->
+                                        <td>
+                                            {% if account.is_active %}
+                                                <span class="badge bg-success">
+                                                    Active
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">
+                                                    Inactive
+                                                </span>
+                                            {% endif %}
+                                        </td>
+
+                                        <!-- Created Date -->
+                                        <td>
+                                            {% if account.created_at %}
+                                                {{ account.created_at.strftime('%b %d, %Y') }}
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </td>
+
+                                        <!-- Account Actions -->
+                                        <td>
+                                            <div class="d-flex flex-column gap-2">
+
+                                                <!-- Activate / Deactivate -->
+                                                <div>
+                                                    {% if account.is_active %}
+                                                        {% if account.id != current_admin_id %}
+                                                            <form method="POST"
+                                                                  action="{{ url_for('protected.deactivate_account', account_id=account.id) }}"
+                                                                  onsubmit="return confirm('Deactivate this account?');">
+                                                                <input type="hidden"
+                                                                       name="csrf_token"
+                                                                       value="{{ csrf_token }}">
+
+                                                                <button type="submit"
+                                                                        class="btn btn-sm btn-outline-danger">
+                                                                    Deactivate
+                                                                </button>
+                                                            </form>
+                                                        {% else %}
+                                                            <span class="text-muted small">
+                                                                Current account
+                                                            </span>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <form method="POST"
+                                                              action="{{ url_for('protected.activate_account', account_id=account.id) }}"
+                                                              onsubmit="return confirm('Activate this account?');">
+                                                            <input type="hidden"
+                                                                   name="csrf_token"
+                                                                   value="{{ csrf_token }}">
+
+                                                            <button type="submit"
+                                                                    class="btn btn-sm btn-outline-success">
+                                                                Activate
+                                                            </button>
+                                                        </form>
+                                                    {% endif %}
+                                                </div>
+
+                                                <!-- Change Password -->
+                                                {% if account.id != current_admin_id %}
+                                                    <form method="POST"
+                                                          action="{{ url_for('protected.change_account_password', account_id=account.id) }}"
+                                                          onsubmit="return confirm('Change the password for this account?');">
+
+                                                        <input type="hidden"
+                                                               name="csrf_token"
+                                                               value="{{ csrf_token }}">
+
+                                                        <div class="d-flex flex-column gap-2"
+                                                             style="min-width: 180px;">
+
+                                                            <input type="password"
+                                                                   name="new_password"
+                                                                   class="form-control form-control-sm"
+                                                                   placeholder="New password"
+                                                                   minlength="6"
+                                                                   maxlength="128"
+                                                                   autocomplete="new-password"
+                                                                   aria-label="New password for {{ account.user }}"
+                                                                   required>
+
+                                                            <input type="password"
+                                                                   name="confirm_password"
+                                                                   class="form-control form-control-sm"
+                                                                   placeholder="Confirm password"
+                                                                   minlength="6"
+                                                                   maxlength="128"
+                                                                   autocomplete="new-password"
+                                                                   aria-label="Confirm password for {{ account.user }}"
+                                                                   required>
+
+                                                            <button type="submit"
+                                                                    class="btn btn-sm btn-outline-primary">
+                                                                Change Password
+                                                            </button>
+
+                                                        </div>
+                                                    </form>
+                                                {% endif %}
+
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+                    <div class="text-center py-5">
+                        <p class="text-muted mb-0">
+                            No registrar accounts found.
+                        </p>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
