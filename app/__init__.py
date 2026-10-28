@@ -11,7 +11,7 @@ def create_app():
         app = Flask(__name__)
 
         app.config['SQLALCHEMY_DATABASE_URI']=\
-        'mysql+pymysql://root:StrongPassword123@127.0.0.1:3306/dpars_db'
+        'mysql+pymysql://dpars_website_admin:DparsAdmin123@127.0.0.1:3306/dpars_db'
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
         # Needed for Flask `flash()` and sessions
@@ -22,8 +22,8 @@ def create_app():
         app.config['MAIL_USE_TLS'] = True
         app.config['MAIL_USE_SSL'] = False
         app.config['MAIL_DEBUG'] = True
-        app.config['MAIL_USERNAME'] = 'dparspup@gmail.com'
-        app.config['MAIL_PASSWORD'] = 'dpars070606.....'
+        app.config['MAIL_USERNAME'] = 'lokniru766@gmail.com'
+        app.config['MAIL_PASSWORD'] = '070606'
 
         mail.init_app(app)
 
